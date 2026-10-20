@@ -1,0 +1,162 @@
+{% extends 'gestions/base.html' %}
+{% load static %}
+
+{% block title %}Alertes de Stock{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>Alertes de Stock
+                </h2>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'gestion_stock' %}" class="btn btn-primary">
+                        <i class="fas fa-boxes me-2"></i>Gestion Stock
+                    </a>
+                    <a href="{% url 'liste_articles' %}" class="btn btn-secondary">
+                        <i class="fas fa-list me-2"></i>Liste Articles
+                    </a>
+                </div>
+            </div>
+
+            <!-- Statistiques des Alertes -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Alertes</h5>
+                            <h3 class="mb-0">{{ total_alertes }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Stock Critique</h5>
+                            <h3 class="mb-0">{{ articles_alerte|length }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Actions</h5>
+                            <a href="{% url 'creer_article' %}" class="btn btn-light btn-sm">
+                                <i class="fas fa-plus me-1"></i>Nouvel Article
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if articles_alerte %}
+            <!-- Liste des Articles en Alerte -->
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Articles avec Stock Faible (≤ 5 unités)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Code</th>
+                                    <th>Stock Actuel</th>
+                                    <th>Stock Initial</th>
+                                    <th>Prix Unitaire</th>
+                                    <th>Fournisseur</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for article in articles_alerte %}
+                                <tr class="table-warning">
+                                    <td>
+                                        <strong>{{ article.designation }}</strong>
+                                    </td>
+                                    <td><code>{{ article.code_produit }}</code></td>
+                                    <td>
+                                        <span class="badge bg-danger fs-6">{{ article.stock_actuel }}</span>
+                                    </td>
+                                    <td>{{ article.stock_initial }}</td>
+                                    <td>{{ article.prix_unitaire_defaut|floatformat:"0" }} FCFA</td>
+                                    <td>
+                                        {% if article.fournisseur %}
+                                            <span class="badge bg-secondary">{{ article.fournisseur }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Non spécifié</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'modifier_stock' article.pk %}" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit me-1"></i>Modifier Stock
+                                            </a>
+                                            <a href="{% url 'modifier_article' article.pk %}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-cog me-1"></i>Modifier Article
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommandations -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Recommandations
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-info">Actions Recommandées :</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Contacter les fournisseurs pour réapprovisionner</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Mettre à jour les stocks manuellement si nécessaire</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Vérifier les commandes en cours</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Analyser les tendances de vente</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-info">Prévention :</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-shield-alt text-primary me-2"></i>Définir des seuils d'alerte appropriés</li>
+                                <li><i class="fas fa-shield-alt text-primary me-2"></i>Mettre en place des commandes automatiques</li>
+                                <li><i class="fas fa-shield-alt text-primary me-2"></i>Surveiller régulièrement les niveaux de stock</li>
+                                <li><i class="fas fa-shield-alt text-primary me-2"></i>Former le personnel à la gestion des alertes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- Aucune Alerte -->
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
+                    <h4 class="text-success mb-3">Aucune Alerte de Stock</h4>
+                    <p class="text-muted mb-4">Tous les articles ont un stock suffisant (> 5 unités).</p>
+                    <a href="{% url 'gestion_stock' %}" class="btn btn-primary">
+                        <i class="fas fa-boxes me-2"></i>Voir la Gestion du Stock
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

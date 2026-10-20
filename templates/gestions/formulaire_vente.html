@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Créer une nouvelle facture</h2>
+    {% if form.errors or formset_lignes.errors %}
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="fas fa-exclamation-triangle fa-lg me-2"></i>
+    <div>
+        <strong>Erreur lors de la création de la facture :</strong>
+        <ul class="mb-0">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for formset in formset_lignes.forms %}
+                {% for field, errors in formset.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form_facture|crispy }}
+
+        {{ formset_lignes.management_form }}
+
+        <div id="formset-container">
+            {% for form in formset_lignes %}
+                <div class="inline-formset-item p-3 mb-3 border rounded bg-light">
+                    {{ form.id }}
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Article</label>
+                            {{ form.article }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Code</label>
+                            {{ form.code_produit_facture }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Désignation</label>
+                            {{ form.designation_facturee }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Prix Unitaire</label>
+                            {{ form.prix_unitaire_facture }}
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">Quantité</label>
+                            {{ form.quantite }}
+                        </div>
+                    </div>
+                    <div class="text-end mt-2">
+                        <strong>Total ligne: </strong><span class="ligne-total">0 FCFA</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Template vide caché -->
+        <div id="empty-form-template" style="display: none;">
+            <div class="inline-formset-item p-3 mb-3 border rounded bg-light">
+                {{ formset_lignes.empty_form.id }}
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Article</label>
+                        {{ formset_lignes.empty_form.article }}
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Code</label>
+                        {{ formset_lignes.empty_form.code_produit_facture }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Désignation</label>
+                        {{ formset_lignes.empty_form.designation_facturee }}
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Prix Unitaire</label>
+                        {{ formset_lignes.empty_form.prix_unitaire_facture }}
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label">Quantité</label>
+                        {{ formset_lignes.empty_form.quantite }}
+                    </div>
+                </div>
+                <div class="text-end mt-2">
+                    <strong>Total ligne: </strong><span class="ligne-total">0 FCFA</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end">
+            <button type="button" id="add-item" class="btn btn-success mb-3">Ajouter une ligne</button>
+            <h4>Total général: <span id="total-general">0 FCFA</span></h4>
+            <button type="submit" class="btn btn-primary">Enregistrer la facture</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const articlesCache = {};
+
+    async function loadArticleData(articleId) {
+        if (articlesCache[articleId]) return articlesCache[articleId];
+        try {
+            const response = await fetch(`/articles/${articleId}/json/`);
+            const data = await response.json();
+            articlesCache[articleId] = data;
+            return data;
+        } catch (error) {
+            console.error('Erreur:', error);
+            return null;
+        }
+    }
+
+    function updateTotalLigne(formElement) {
+        const prixInput = formElement.querySelector('[name$="-prix_unitaire_facture"]');
+        const quantiteInput = formElement.querySelector('[name$="-quantite"]');
+        const totalSpan = formElement.querySelector('.ligne-total');
+
+        const prix = parseFloat(prixInput?.value || 0);
+        const quantite = parseFloat(quantiteInput?.value || 0);
+        const total = prix * quantite;
+
+        if (totalSpan) {
+            totalSpan.textContent = total.toLocaleString() + ' FCFA';
+        }
+
+        updateTotalGeneral();
+    }
+
+    function updateTotalGeneral() {
+        const totalSpans = document.querySelectorAll('.ligne-total');
+        let total = 0;
+        totalSpans.forEach(span => {
+            const montant = parseFloat(span.textContent.replace(/[^\d.-]/g, '')) || 0;
+            total += montant;
+        });
+
+        document.getElementById('total-general').textContent = total.toLocaleString() + ' FCFA';
+    }
+
+    function reattachEventListeners(formElement) {
+        const prixInput = formElement.querySelector('[name$="-prix_unitaire_facture"]');
+        const quantiteInput = formElement.querySelector('[name$="-quantite"]');
+        const articleSelect = formElement.querySelector('select[name$="-article"]');
+
+        if (prixInput) {
+            prixInput.addEventListener('input', () => updateTotalLigne(formElement));
+        }
+        if (quantiteInput) {
+            quantiteInput.addEventListener('input', () => updateTotalLigne(formElement));
+        }
+        if (articleSelect) {
+            articleSelect.addEventListener('change', function() {
+                autoFillArticleFields(this);
+            });
+        }
+    }
+
+    async function autoFillArticleFields(selectElement) {
+        const row = selectElement.closest('.inline-formset-item');
+        const articleId = selectElement.value;
+
+        if (articleId) {
+            const articleData = await loadArticleData(articleId);
+            if (articleData) {
+                row.querySelector('[id$="-code_produit_facture"]').value = articleData.code_produit;
+                row.querySelector('[id$="-designation_facturee"]').value = articleData.designation;
+                // Convertir le prix en entier pour correspondre au modèle
+                const prix = Math.round(parseFloat(articleData.prix_unitaire_defaut));
+                row.querySelector('[id$="-prix_unitaire_facture"]').value = prix;
+            }
+        } else {
+            row.querySelector('[id$="-code_produit_facture"]').value = '';
+            row.querySelector('[id$="-designation_facturee"]').value = '';
+            row.querySelector('[id$="-prix_unitaire_facture"]').value = '';
+        }
+        updateTotalLigne(row);
+    }
+
+    document.querySelectorAll('.inline-formset-item').forEach(formElement => {
+        reattachEventListeners(formElement);
+        updateTotalLigne(formElement);
+    });
+
+    document.getElementById('add-item')?.addEventListener('click', function () {
+        const formContainer = document.getElementById('formset-container');
+        const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+        const formCount = parseInt(totalFormsInput.value);
+
+        const template = document.getElementById('empty-form-template').innerHTML;
+        const newFormHtml = template.replace(/__prefix__/g, formCount);
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = newFormHtml;
+        const newFormElement = tempDiv.firstElementChild;
+
+        formContainer.appendChild(newFormElement);
+        totalFormsInput.value = formCount + 1;
+
+        reattachEventListeners(newFormElement);
+        updateTotalLigne(newFormElement);
+    });
+</script>
+{% endblock %}

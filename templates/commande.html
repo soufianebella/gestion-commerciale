@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commandes{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'vente.css' %}">
+<div class="vente-wrapper">
+<section class="vente-section">
+  <h2>Nouvelle Commande</h2>
+  <form method="post" class="vente-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Ajouter la commande</button>
+  </form>
+</section>
+
+<section class="table-section">
+  <h2>Historiques des commandes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Client</th>
+        <th>Référence </th>
+        <th>Code Produit</th>
+        <th>Quantité</th>
+        <th>Prix Unitaire</th>
+        <th>Prix Total</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for commande in commandes %}
+      <tr>
+        <td>{{ commande.client }}</td>
+        <td>{{ commande.reference }}</td>
+        <td>{{ commande.code_produit }}</td>
+        <td>{{ commande.quantite }}</td>
+        <td>{{ commande.prix_unitaire }} FCFA</td>
+        <td>{{ commande.prix_total }} FCFA</td>
+        <td>{{ commande.date|date:"Y-m-d H:i:s" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+</div>
+
+{% endblock %}

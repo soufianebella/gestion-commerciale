@@ -1,0 +1,48 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% comment %}
+    Si vous avez un base.html, il est préférable de l'étendre pour la cohérence :
+    {% extends 'base.html' %}
+    Et ensuite, placez le link rel="..." à l'intérieur d'un bloc, par exemple, {% block extra_head %}
+{% endcomment %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <h2>Connexion</h2>
+
+    {# Afficher les erreurs non-liées aux champs s'il y en a #}
+    {% if form.non_field_errors %}
+        <div style="color: red; margin-bottom: 10px;">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+
+      {# Rendre chaque champ manuellement pour maintenir votre structure HTML personnalisée #}
+      {# Vous pouvez ajouter des attributs comme placeholder directement si nécessaire #}
+      <p>
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {# Afficher les erreurs spécifiques au champ #}
+        {% if form.username.errors %}
+            <span style="color: red;">{{ form.username.errors }}</span>
+        {% endif %}
+      </p>
+      <p>
+        {{ form.password.label_tag }}
+        {{ form.password }}
+        {% if form.password.errors %}
+            <span style="color: red;">{{ form.password.errors }}</span>
+        {% endif %}
+      </p>
+
+      <button type="submit" class="btn">Se connecter</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

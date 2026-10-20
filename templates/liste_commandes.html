@@ -1,0 +1,69 @@
+{% extends 'base.html' %} {# Assurez-vous que 'base.html' est le bon chemin #}
+
+{% block title %}Liste des Commandes{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Liste des Commandes</h2>
+
+    {# Messages Django #}
+    {% if messages %}
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+                <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="mb-3">
+        <a href="{% url 'creer_commande' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Créer une nouvelle Commande
+        </a>
+    </div>
+
+    {% if commandes %} {# Vérifie si la liste de commandes n'est pas vide #}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Référence</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Code Produit</th>
+                    <th scope="col">Quantité</th>
+                    <th scope="col">Prix Unitaire</th>
+                    <th scope="col">Prix Total</th>
+                    <th scope="col">Date de Commande</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commande in commandes %}
+                <tr>
+                    <td>{{ commande.reference }}</td>
+                    <td>{{ commande.client  }}</td> {# Affiche '-' si le client est vide/nul #}
+                    <td>{{ commande.code_produit }}</td>
+                    <td>{{ commande.quantite }}</td>
+                    <td>{{ commande.prix_unitaire|floatformat:0 }} FCFA</td>
+                    <td>{{ commande.prix_total|floatformat:0 }} FCFA</td> {# Utilise la méthode prix_total du modèle #}
+                    <td>{{ commande.date|date:"d/m/Y H:i" }}</td> {# Formate la date et l'heure #}
+                    <td>
+                        {# Pas de vue de détail pour les commandes simples dans votre code actuel, donc pas de bouton "Voir" #}
+                        <a href="{% url 'modifier_commande' pk=commande.pk %}" class="btn btn-warning btn-sm" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'supprimer_commande' pk=commande.pk %}" class="btn btn-danger btn-sm" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info">
+            Aucune commande n'a encore été enregistrée. <a href="{% url 'creer_commande' %}">Créez-en une maintenant !</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

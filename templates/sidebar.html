@@ -1,0 +1,57 @@
+
+
+{% load static %}
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <img src="{% static 'image.jpg' %}" alt="Logo E.K.K.C.F." class="logo">
+    <div class="brand-info">
+      <h1 class="brand-name">E.K.K.C.F.</h1>
+      <p class="brand-slogan">Gestion de Stock Commerciale</p>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <li>
+        <a href="{% url 'accueil' %}" class="nav-item">
+          <img src="{% static 'accueil.png' %}" alt="Accueil" class="ico-png">
+          <span>Accueil</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'liste_ventes' %}" class="nav-item">
+          <img src="{% static 'vente.png' %}" alt="Vente" class="ico-png">
+          <span>Ventes(Factures)</span>
+        </a>
+      </li>
+     
+
+       <li>
+        <a href="{% url 'liste_ventes' %}" class="nav-item">
+          <img src="{% static 'articles.png' %}" alt="Vente" class="ico-png">
+          <span>Articles</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="{% url 'gestion_stock' %}" class="nav-item">
+          <img src="{% static 'stock.png' %}" alt="Stock" class="ico-png">
+          <span>Stocks</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'alertes_stock' %}" class="nav-item">
+          <img src="{% static 'alerte.png' %}" alt="Alertes" class="ico-png">
+          <span>Alertes</span>
+        </a>
+      </li>
+     
+
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <p class="contact-email">bellasofiane716@gmail.com</p>
+    <p class="contact-address">Bella Sofiane,<br>Ouagadougou, Burkina Faso</p>
+  </div>
+</aside>

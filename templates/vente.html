@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vente{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'vente.css' %}">
+<div class="vente-wrapper">
+<section class="vente-section">
+  <h2>Nouvelle vente</h2>
+  <form method="post" class="vente-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Ajouter la vente</button>
+  </form>
+</section>
+
+<section class="table-section">
+  <h2>Historiques des ventes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Client</th>
+        <th>Référence</th>
+        <th>Code Produit</th>
+        <th>Quantité</th>
+        <th>Prix Unitaire</th>
+        <th>Prix Total</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for vente in ventes %}
+      <tr>
+        <td>{{ vente.client }}</td>
+        <td>{{ vente.reference }}</td>
+        <td>{{ vente.code_produit }}</td>
+        <td>{{ vente.quantite }}</td>
+        <td>{{ vente.prix_unitaire }} FCFA</td>
+        <td>{{ vente.prix_total }} FCFA</td>
+        <td>{{ vente.date|date:"Y-m-d H:i:s" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+</div>
+<!-- lien pour voir la facture -->
+<a href="{% url 'facture' vente.pk %}" target="_blank">🧾 Facture</a>
+
+
+{% endblock %}

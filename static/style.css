@@ -1,0 +1,216 @@
+/* RESET SIMPLE */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Applique le background SEULEMENT sur l'accueil */
+.accueil-bg {
+
+  background-size: cover;
+  background-position: center;
+}
+
+
+
+/* NAVBAR */
+.navbar {
+  background-color: #003d80;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 1rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.menu a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.menu a:hover {
+  color: #0073e6;
+}
+
+/* HERO SECTION */
+.hero {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/static/image.jpg");  
+}
+
+.hero-content {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 40px;
+  border-radius: 10px;
+  max-width: 600px;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  color: #003d80;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+/* BUTTON */
+.btn {
+  display: inline-block;
+  background-color: #0073e6;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #005bb5;
+}
+
+
+
+    /* Grille des boutons modules */
+    .grille-boutons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 990px;
+      width: 100%;
+      margin-top: 90px; /* Ajout de l'espace sous le header */
+      justify-items: center;
+      margin-left: auto; /* Ajuste selon la largeur de ta sidebar (250px + 20px d'espace) */
+    }
+
+    .bouton-module {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      min-height: 180px;
+      box-sizing: border-box;
+    }
+
+    .bouton-module:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .icone-bouton {
+      font-size: 3em;
+      color: #6a0dad;
+      margin-bottom: 15px;
+    }
+
+    .contenu-bouton {
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .contenu-bouton h3 {
+      margin: 0;
+      font-size: 1.3em;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .contenu-bouton p {
+      font-size: 0.9em;
+      color: #666;
+      margin: 0 0 10px 0;
+      line-height: 1.4;
+    }
+
+    .metrique {
+      font-size: 0.85em;
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .fleche-bouton {
+      position: absolute;
+      bottom: 25px;
+      right: 25px;
+      font-size: 1.2em;
+      color: #ccc;
+      transition: color 0.2s;
+    }
+
+    .bouton-module:hover .fleche-bouton {
+      color: #6a0dad;
+    }
+
+
+    /*les icones    */
+
+  .icone-png {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+/* Sidebar icone */
+.ico-png {
+  width: 30px;
+  height: 30px;
+  margin-right: 12px;
+  object-fit: contain;
+}
+
+/* FOOTER */
+.footer {
+  background-color: #003d80;
+  color: #fff;
+  text-align: center;
+  padding: 15px 0;
+  
+}
+
+
+.main-content {
+    margin-left:300px;
+}

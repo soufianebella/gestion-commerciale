@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environnements virtuels
+Venv/
+venv/
+ENV/
+env/
+.venv/
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles_collected/
+staticfiles/
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+local_settings.py
+
+# Exécutables / builds Windows (ne pas versionner les binaires)
+*.exe
+*.lnk
+# Lanceurs versionnés volontairement : django_launcher.py, launch_django.ps1, script.bat, create_exe.py
+
+
+# PyInstaller
+*.spec
+build/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.spyderproject
+.ropeproject
+
+# OS / OneDrive
+Thumbs.db
+desktop.ini
+Desktop.ini
+~$*
+*.tmp
+*.bak
+.DS_Store
+
+# PyCharm
+.idea/

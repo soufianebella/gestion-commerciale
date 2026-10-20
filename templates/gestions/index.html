@@ -1,0 +1,12 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <h2>Bienvenue dans votre espace de gestion</h2>
+    <p>Suivez vos ventes, gérez vos stocks et optimisez vos commandes.</p>
+    <a href="{% url 'vue_connexion' %}" class="btn">Se connecter</a>
+  </div>
+</section>
+{% endblock %}

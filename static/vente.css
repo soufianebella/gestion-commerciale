@@ -1,0 +1,243 @@
+/* --- vente.css : Styles modernisés pour les pages de Vente --- */
+
+:root {
+  --primary-color: #003d80;
+  --primary-light: #0073e6;
+  --primary-dark: #002855;
+  --accent-color: #ff6b00;
+  --success-color: #28a745;
+  --light-bg: #f8f9fa;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Conteneur principal du formulaire */
+.vente-form-wrapper {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Section du formulaire */
+.form-section {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.form-section h2 {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.form-section h2:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: var(--accent-color);
+  border-radius: 3px;
+}
+
+/* Fieldsets stylisés */
+fieldset.form-group {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: var(--border-radius);
+  padding: 1.5rem !important;
+  margin-bottom: 2rem !important;
+  transition: var(--transition);
+}
+
+fieldset.form-group:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+fieldset.form-group legend {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0 1rem;
+  margin-bottom: 0;
+  width: auto;
+}
+
+/* Ligne de facture */
+.inline-formset-item {
+  background-color: var(--light-bg) !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: var(--border-radius) !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1rem !important;
+  position: relative;
+  transition: var(--transition);
+}
+
+.inline-formset-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 3px solid var(--primary-light) !important;
+}
+
+.inline-formset-item h4 {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.inline-formset-item h4:before {
+  content: '📋';
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+/* Total de ligne */
+.ligne-total {
+  font-weight: 600;
+  color: var(--primary-color);
+  background-color: rgba(0, 61, 128, 0.05);
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Bouton d'ajout de ligne */
+#add-item {
+  background-color: var(--light-bg);
+  color: var(--primary-color);
+  border: 1px dashed var(--primary-light);
+  border-radius: var(--border-radius);
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  margin: 1rem auto;
+  width: fit-content;
+}
+
+#add-item:before {
+  content: '+';
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+#add-item:hover {
+  background-color: var(--primary-light);
+  color: white;
+  border-style: solid;
+}
+
+/* Card du total de facture */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.card-body {
+  padding: 1.5rem;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+}
+
+#total-facture {
+  font-size: 1.3rem;
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 1rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+/* Boutons d'action */
+.btn-success {
+  background-color: var(--success-color);
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline-secondary {
+  border-color: #6c757d;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .vente-form-wrapper {
+    padding: 0 0.5rem;
+  }
+  
+  .form-section {
+    padding: 1.5rem 1rem;
+  }
+  
+  fieldset.form-group {
+    padding: 1rem !important;
+  }
+  
+  .inline-formset-item {
+    padding: 1rem !important;
+  }
+}
+.vente-section {
+    padding: 30px 20px;
+    max-width: 900px;
+    margin: 0 auto; /* Centre horizontalement */
+    background-color: #fff;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.vente-section h2 {
+    margin-bottom: 20px;
+    color: #004080; /* Peut être remplacé par votre variable --primary-blue si vous en avez une */
+    text-align: center; /* J'ai ajouté ceci pour cohérence avec le bas du fichier */
+}
+
+/* Styles spécifiques pour la section des tables (si nécessaire, au-delà de Bootstrap) */
+.table-section {
+    margin: 40px auto;
+    padding: 20px;
+    max-width: 1100px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-section h2 {
+    margin-bottom: 20px;
+    color: #004080; /* Peut être remplacé par votre variable --primary-blue */
+    text-align: center; /* J'ai ajouté ceci pour cohérence avec le bas du fichier */
+}

@@ -1,0 +1,180 @@
+{% extends 'gestions/base.html' %}
+{% load static %}
+
+{% block title %}Gestion du Stock{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-boxes me-2"></i>Gestion du Stock
+                </h2>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'alertes_stock' %}" class="btn btn-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Alertes ({{ articles_en_alerte }})
+                    </a>
+                    <a href="{% url 'liste_articles' %}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>Liste des Articles
+                    </a>
+                </div>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Articles</h5>
+                            <h3 class="mb-0">{{ total_articles }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Stock OK</h5>
+                            <h3 class="mb-0">{{ articles_ok|length }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">En Alerte</h5>
+                            <h3 class="mb-0">{{ articles_en_alerte }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Actions</h5>
+                            <a href="{% url 'creer_article' %}" class="btn btn-light btn-sm">
+                                <i class="fas fa-plus me-1"></i>Nouvel Article
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles en Alerte -->
+            {% if articles_alerte %}
+            <div class="card mb-4 border-warning">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Articles en Alerte (Stock ≤ 5)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Code</th>
+                                    <th>Stock Actuel</th>
+                                    <th>Stock Initial</th>
+                                    <th>Prix Unitaire</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for article in articles_alerte %}
+                                <tr class="table-warning">
+                                    <td>
+                                        <strong>{{ article.designation }}</strong>
+                                        {% if article.fournisseur %}
+                                        <br><small class="text-muted">{{ article.fournisseur }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td><code>{{ article.code_produit }}</code></td>
+                                    <td>
+                                        <span class="badge bg-danger">{{ article.stock_actuel }}</span>
+                                    </td>
+                                    <td>{{ article.stock_initial }}</td>
+                                    <td>{{ article.prix_unitaire_defaut|floatformat:"0" }} FCFA</td>
+                                    <td>
+                                        <span class="badge bg-danger">{{ article.get_stock_status }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'modifier_stock' article.pk %}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit me-1"></i>Modifier
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Articles avec Stock OK -->
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Articles avec Stock OK (> 5)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if articles_ok %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Code</th>
+                                    <th>Stock Actuel</th>
+                                    <th>Stock Initial</th>
+                                    <th>Prix Unitaire</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for article in articles_ok %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ article.designation }}</strong>
+                                        {% if article.fournisseur %}
+                                        <br><small class="text-muted">{{ article.fournisseur }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td><code>{{ article.code_produit }}</code></td>
+                                    <td>
+                                        <span class="badge bg-success">{{ article.stock_actuel }}</span>
+                                    </td>
+                                    <td>{{ article.stock_initial }}</td>
+                                    <td>{{ article.prix_unitaire_defaut|floatformat:"0" }} FCFA</td>
+                                    <td>
+                                        <span class="badge bg-success">{{ article.get_stock_status }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'modifier_stock' article.pk %}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit me-1"></i>Modifier
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-info-circle text-muted fa-3x mb-3"></i>
+                        <p class="text-muted">Aucun article avec un stock suffisant.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

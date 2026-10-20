@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Historiques des Factures{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'vente.css' %}"> {# Votre CSS pour la table #}
+
+<div class="historique-ventes-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Historiques des Factures</h2>
+        <a href="{% url 'creer_vente' %}" class="btn btn-primary btn-sm">Créer une nouvelle facture</a> {# Lien vers le formulaire de création #}
+    </div>
+
+    {% if ventes %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>Numéro Facture</th>
+                        <th>Client</th>
+                        <th>Date de Vente</th>
+                        <th>Total Facture HT</th>
+                        <th>Enregistré par</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vente in ventes %}
+                        <tr>
+                            <td>
+                                {# Utilise le formatage pour avoir toujours 5 chiffres #}
+                                <a href="{% url 'detail_vente' vente.pk %}">N°: {{ vente.id|stringformat:"05d" }}</a>
+                            </td>
+                            <td>{{ vente.client.nom }}</td>
+                            <td>{{ vente.date_vente|date:"d/m/Y" }}</td>
+                            <td>{{ vente.total_facture_ht|floatformat:"0" }} FCFA</td>
+                            <td>{{ vente.enregistre_par.username|default:"-" }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'detail_vente' vente.pk %}" class="btn btn-info btn-sm me-1" title="Voir les détails">Détails</a>
+                                <a href="{% url 'modifier_vente' vente.pk %}" class="btn btn-warning btn-sm me-1" title="Modifier la facture">Modifier</a>
+                                <a href="{% url 'generer_facture_pdf' vente.pk %}" class="btn btn-secondary btn-sm me-1" target="_blank" title="Générer le PDF">PDF</a>
+                                <a href="{% url 'supprimer_vente' vente.pk %}" class="btn btn-danger btn-sm" title="Supprimer la facture">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Aucune facture enregistrée pour le moment.
+        </div>
+        <p class="text-center">
+            <a href="{% url 'creer_vente' %}" class="btn btn-success">Ajouter votre première facture</a>
+        </p>
+    {% endif %}
+</div>
+
+{% endblock %}

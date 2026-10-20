@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tableau de Bord Gestion | E.K.K.C.F{% endblock %} {# Titre mis à jour #}
+{% block body_class %}gestion-bg{% endblock %}
+
+{% block content %}
+
+<div class="grille-boutons">
+    {# --- Module Ventes (Factures) --- #}
+    <a href="{% url 'liste_ventes' %}" class="bouton-module"> {# URL corrigée #}
+        <div class="icone-bouton">
+            <img src="{% static 'vente.png' %}" alt="Ventes" class="icone-png">
+        </div>
+        <div class="contenu-bouton">
+            <h3>Ventes (Factures)</h3> {# Texte mis à jour pour clarté #}
+            <p>Gérez vos factures et les détails de vente.</p>
+            <span class="metrique">Afficher</span>
+        </div>
+        <div class="fleche-bouton"></div>
+    </a>
+
+
+    {# --- Module Articles --- #}
+    <a href="{% url 'liste_articles' %}" class="bouton-module"> {# Nouvelle URL #}
+        <div class="icone-bouton">
+            <img src="{% static 'articles.png' %}" alt="Articles" class="icone-png"> {# Assurez-vous d'avoir article.png #}
+        </div>
+        <div class="contenu-bouton">
+            <h3>Articles</h3>
+            <p>Gérez votre catalogue de produits/services.</p>
+            <span class="metrique">Voir</span>
+        </div>
+        <div class="fleche-bouton"></div>
+    </a>
+
+
+    {# --- Module Crédits (Liens non définis, laissés tels quels) --- #}
+    
+
+    {# --- Module Stocks (Liens non définis, laissés tels quels) --- #}
+    <a href="{% url 'gestion_stock' %}" class="bouton-module">
+        <div class="icone-bouton">
+            <img src="{% static 'stock.png' %}" alt="Stocks" class="icone-png">
+        </div>
+        <div class="contenu-bouton">
+            <h3>Stocks</h3>
+            <p>Consultez votre stock en temps réel</p>
+            <span class="metrique">Voir</span>
+        </div>
+        <div class="fleche-bouton"></div>
+    </a>
+
+    {# --- Module Alertes (Liens non définis, laissés tels quels) --- #}
+    <a href="{% url 'alertes_stock' %}" class="bouton-module">
+        <div class="icone-bouton">
+            <img src="{% static 'alerte.png' %}" alt="Alertes" class="icone-png">
+        </div>
+        <div class="contenu-bouton">
+            <h3>Alertes</h3>
+            <p>Vérifiez vos urgences avec plus de professionnalisme</p>
+            <span class="metrique">Voir</span>
+        </div>
+        <div class="fleche-bouton"></div>
+    </a>
+
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{# C:\Users\Sofiane\PycharmProjects\commergestion-code\gestions\templates\gestions\formulaire_commande.html #}
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %} {# Si vous utilisez django-crispy-forms #}
+
+{% block title %}
+    {% if commande %}Modifier Commande{% else %}Créer Commande{% endif %}
+{% endblock %}
+
+{% block content %}
+{# CONTAINER FLUID POUR UNE MARGE INTÉRIEURE GLOBALE DU CONTENU #}
+<div class="container-fluid mt-4">
+    {# ROW POUR LA LIGNE DE GRILLE ET JUSTIFY-CONTENT-CENTER POUR LE CENTRAGE HORIZONTAL #}
+    <div class="row justify-content-center">
+        {# COLONNE DÉFINISSANT LA LARGEUR DU FORMULAIRE SUR DIFFÉRENTS ÉCRANS ET LE CENTRANT GRÂCE À LA LIGNE PARENTE #}
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        {% if commande %}Modifier la Commande #{{ commande.id }}{% else %}Créer une nouvelle Commande{% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {{ form|crispy }} {# ou {{ form.as_p }} si pas de crispy-forms #}
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success me-2">
+                                <i class="fas fa-save me-1"></i> {% if commande %}Enregistrer{% else %}Créer{% endif %}
+                            </button>
+                            <a href="{% url 'liste_commandes' %}" class="btn btn-secondary">
+                                <i class="fas fa-times-circle me-1"></i> Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{# Placez ici les scripts JS spécifiques à ce formulaire si nécessaire #}
+{% endblock %}

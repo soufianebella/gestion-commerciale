@@ -1,0 +1,81 @@
+.sidebar {
+    width: 250px; /* Adjust as needed */
+    background-color: #f7f7f7; /* Very light gray */
+    color: #333; /* Dark text color */
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Or absolute/relative depending on your layout */
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 0 20px 20px; /* Padding for bottom */
+    border-bottom: 1px solid #eee; /* Separator line */
+    margin-bottom: 20px;
+}
+
+.sidebar-header .logo {
+    width: 40px; /* Adjust logo size */
+    height: 40px;
+    margin-right: 10px;
+}
+
+.sidebar-header .brand-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
+    color: #555; /* A bit darker for brand name */
+}
+
+.sidebar-header .brand-slogan {
+    font-size: 0.8em;
+    margin: 0;
+    color: #777;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Allows navigation to take up available space */
+}
+
+.sidebar-nav .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-nav .nav-item i {
+    margin-right: 15px;
+    font-size: 1.2em; /* Adjust icon size */
+}
+
+
+
+.sidebar-nav .nav-item:hover,
+.sidebar-nav li.active .nav-item {
+    background-color:#003d80 ; /* Blue for hover/active */
+    color: #fff; /* White text for hover/active */
+}
+
+.sidebar-footer {
+    padding: 20px;
+    font-size: 0.8em;
+    color: #777;
+    border-top: 1px solid #eee; /* Separator line */
+    margin-top: 20px;
+}
+
+.sidebar-footer p {
+    margin: 5px 0;
+}

@@ -1,0 +1,163 @@
+{# C:\Users\Sofiane\PycharmProjects\commergestion-code\gestions\templates\gestions\facture_pdf_template.html #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Facture N°{{ vente.id|stringformat:"05d" }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 14mm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10px;
+            color: #1f4e79; /* Bleu mono proche du papier */
+            margin: 0;
+        }
+        .sheet {
+            border: 1px solid #1f4e79;
+            padding: 8mm;
+            position: relative;
+        }
+        .watermark {
+            position: absolute;
+            top: 45%;
+            left: 10mm;
+            color: #1f4e79;
+            opacity: 0.08;
+            font-size: 64px;
+            letter-spacing: 4px;
+            transform: rotate(-25deg);
+        }
+        .header-grid {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .header-grid td {
+            vertical-align: top;
+        }
+        .brand {
+            font-weight: bold;
+            font-size: 22px;
+            letter-spacing: 2px;
+        }
+        .subtitle { font-weight: bold; }
+        .facture-box {
+            border: 1px solid #1f4e79;
+            padding: 6px 8px;
+            text-align: center;
+        }
+        .date-grid {
+            border: 1px solid #1f4e79;
+            display: inline-table;
+            margin-bottom: 6px;
+        }
+        .date-grid td {
+            border-right: 1px solid #1f4e79;
+            padding: 4px 6px;
+            font-weight: bold;
+        }
+        .date-grid td:last-child { border-right: none; }
+        .row {
+            margin-top: 6px;
+        }
+        .label { font-weight: bold; }
+        .line-box {
+            border: 1px solid #1f4e79;
+            padding: 6px;
+        }
+        table.items { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        table.items th, table.items td { border: 1px solid #1f4e79; padding: 6px; }
+        table.items th { text-transform: uppercase; font-weight: bold; text-align: center; }
+        table.items td.num { text-align: right; }
+        .total-row td { font-weight: bold; }
+        .signatures { display: flex; justify-content: space-between; margin-top: 18px; }
+        .signatures .slot { width: 45%; text-align: center; }
+        .signatures .slot .label { display: block; margin-top: 28px; }
+    </style>
+    </head>
+<body>
+    <div class="sheet">
+        <div class="watermark">KIEMDE</div>
+
+        <table class="header-grid">
+            <tr>
+                <td style="width:70%">
+                    <div class="brand">E.K.F</div>
+                    <div class="subtitle">Ets. KIEMDE &amp; FRERES</div>
+                    <div>Vente de pièces détachées toutes marques</div>
+                    <div>Marché de Cycle TP, Ouagadougou – Burkina Faso</div>
+                    <div>Tél: 70 03 18 45 / 78 90 80 09 / 78 75 29 29</div>
+                    <div>Orange Money: 76 72 28 48</div>
+                </td>
+                <td style="width:30%">
+                    <table class="date-grid">
+                        <tr>
+                            <td>Jour<br>{{ vente.date_vente|date:"d" }}</td>
+                            <td>Mois<br>{{ vente.date_vente|date:"m" }}</td>
+                            <td>Année<br>{{ vente.date_vente|date:"Y" }}</td>
+                        </tr>
+                    </table>
+                    <div class="facture-box" style="margin-top:6px;">FACTURE</div>
+                    <div class="row"><span class="label">N°</span> {{ vente.id|stringformat:"05d" }}</div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="row">
+            <table style="width:100%; border-collapse: collapse;">
+                <tr>
+                    <td class="line-box" style="width:50%"><span class="label">Client:</span>
+                        {% if vente.client %} {{ vente.client.nom|default:vente.client.nom_complet }} {% else %} __________________________ {% endif %}
+                    </td>
+                    <td style="width:4%"></td>
+                    <td class="line-box" style="width:46%"><span class="label">Adresse:</span>
+                        {% if vente.client and vente.client.adresse %} {{ vente.client.adresse }} {% else %} ____________________________________ {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <table class="items">
+            <thead>
+                <tr>
+                    <th style="width:52%">Désignation</th>
+                    <th style="width:12%">Quantité</th>
+                    <th style="width:18%">P. Unitaire</th>
+                    <th style="width:18%">Prix Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in vente.lignes_vente.all %}
+                <tr>
+                    <td>{{ ligne.designation_facturee }}</td>
+                    <td class="num">{{ ligne.quantite }}</td>
+                    <td class="num">{{ ligne.prix_unitaire_facture|floatformat:"0" }}</td>
+                    <td class="num">{{ ligne.prix_total_ligne|floatformat:"0" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align:center; padding:10px;">Aucune ligne</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="3" style="text-align:right;">TOTAL GENERAL</td>
+                    <td class="num">{{ vente.total_facture_ht|floatformat:"0" }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="signatures">
+            <div class="slot">
+                <span class="label">Le Vendeur</span>
+            </div>
+            <div class="slot">
+                <span class="label">Le Client</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

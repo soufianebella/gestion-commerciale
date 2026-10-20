@@ -1,0 +1,40 @@
+{# C:\Users\Sofiane\PycharmProjects\commergestion-code\gestions\templates\gestions\confirmer_suppression_vente.html #}
+{% extends 'base.html' %} {# Hérite du layout de base #}
+{% load static %} {# Charge les balises pour les fichiers statiques #}
+
+{% block title %}Confirmer la Suppression{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-danger"> {# Utilisation de border-danger pour visuellement indiquer la suppression #}
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Confirmer la Suppression</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead text-center">Êtes-vous sûr de vouloir supprimer la facture N°<strong>{{ object.id|stringformat:"05d" }}</strong> du client <strong>{{ object.client.nom_complet|default:"Non spécifié" }}</strong> (Date: <strong>{{ object.date_vente|date:"d/m/Y" }}</strong>) ?</p>
+                    <p class="text-center text-danger">Cette action est irréversible.</p>
+
+                    <form method="post">
+                        {% csrf_token %} {# Très important pour la sécurité des formulaires Django #}
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="submit" class="btn btn-danger me-3">
+                                <i class="fas fa-trash-alt me-1"></i> Confirmer la Suppression
+                            </button>
+                            {# Assurez-vous que 'detail_vente' est le nom de l'URL pour la vue de détail de la vente #}
+                            <a href="{% url 'detail_vente' object.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-times-circle me-1"></i> Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{# Ajoutez ici des scripts JS spécifiques si besoin #}
+{% endblock %}

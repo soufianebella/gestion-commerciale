@@ -1,0 +1,100 @@
+{# C:\Users\Sofiane\PycharmProjects\commergestion-code\gestions\templates\gestions\detail_vente.html #}
+{% extends 'base.html' %} {# Hérite du layout de base #}
+{% load static %} {# Charge les balises pour les fichiers statiques #}
+
+{% block title %}Détails de la Facture N°{{ vente.id|stringformat:"05d" }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Détails de la Facture N°{{ vente.id|stringformat:"05d" }}</h2>
+                    <div>
+                        <a href="{% url 'modifier_vente' vente.pk %}" class="btn btn-warning btn-sm me-2" title="Modifier la facture">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        <a href="{% url 'generer_facture_pdf' vente.pk %}" class="btn btn-secondary btn-sm me-2" target="_blank" title="Générer le PDF">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </a>
+                        <a href="{% url 'supprimer_vente' vente.pk %}" class="btn btn-danger btn-sm" title="Supprimer la facture">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-sm-end"><strong>Date de Vente :</strong></div>
+                        <div class="col-sm-8">{{ vente.date_vente|date:"d/m/Y " }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-sm-end"><strong>Client :</strong></div>
+                        <div class="col-sm-8">
+                            {% if vente.client %}
+                                {{ vente.client.nom_complet }}
+                                {% if vente.client.telephone %}<br><small>Tél: {{ vente.client.telephone }}</small>{% endif %}
+                                {% if vente.client.email %}<br><small>Email: {{ vente.client.email }}</small>{% endif %}
+                            {% else %}
+                                <span class="text-muted">Client non spécifié</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-sm-end"><strong>Enregistré par :</strong></div>
+                        <div class="col-sm-8">{{ vente.enregistre_par.username|default:"-" }}</div>
+                    </div>
+
+                    <hr>
+
+                    <h4>Articles de la Facture</h4>
+                    {% if vente.lignes_vente.all %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Article</th>
+                                        <th class="text-end">Quantité</th>
+                                        <th class="text-end">Prix Unitaire HT</th>
+                                        <th class="text-end">Sous-total HT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ligne in vente.lignes_vente.all %}
+                                        <tr>
+                                            <td>{{ ligne.designation_facturee }}</td>
+                                            <td class="text-end">{{ ligne.quantite }}</td>
+                                            <td class="text-end">{{ ligne.prix_unitaire_facture|floatformat:"0" }} FCFA</td>
+                                            <td class="text-end">{{ ligne.prix_total_ligne|floatformat:"0" }} FCFA</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" class="text-end">Total Facture HT :</th>
+                                        <th class="text-end">{{ vente.total_facture_ht|floatformat:"0" }} FCFA</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Aucun article enregistré pour cette facture.</p>
+                    {% endif %}
+
+                    <hr>
+
+                    <div class="text-end mt-4">
+                        <a href="{% url 'liste_ventes' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{# Ajoutez ici des scripts JS spécifiques si besoin #}
+{% endblock %}

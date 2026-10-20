@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ action }} une Facture{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'vente.css' %}">
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="mb-0">{{ action }} une Facture</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" id="form-facture" novalidate>
+                {% csrf_token %}
+                
+                <!-- Section Détails de la Facture -->
+                <fieldset class="form-group border p-3 mb-4 rounded">
+                    <legend class="float-none w-auto px-2">Détails de la Facture</legend>
+                    {{ form_vente|crispy }}
+                </fieldset>
+
+                <!-- Section Articles -->
+                <fieldset class="form-group border p-3 mb-4 rounded">
+                    <legend class="float-none w-auto px-2">Articles</legend>
+                    <div id="formset-container">
+                        {{ formset_lignes.management_form }}
+                        {% for form in formset_lignes %}
+                            <div class="inline-formset-item p-3 mb-3 border rounded bg-light">
+                                {{ form.id }}
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Article</label>
+                                        {{ form.article }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Code</label>
+                                        {{ form.code_produit_facture }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Désignation</label>
+                                        {{ form.designation_facturee }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Prix Unitaire</label>
+                                        {{ form.prix_unitaire_facture }}
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label class="form-label">Quantité</label>
+                                        {{ form.quantite }}
+                                    </div>
+                                </div>
+                                <div class="text-end mt-2">
+                                    <strong>Total ligne: </strong><span class="ligne-total">0 FCFA</span>
+                                </div>
+                                {% if form.instance.pk and formset_lignes.can_delete %}
+                                    <div class="form-check mt-2">
+                                        {{ form.DELETE }}
+                                        <label class="form-check-label" for="{{ form.DELETE.id_for_label }}">Supprimer cette ligne</label>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" id="add-item" class="btn btn-primary btn-sm mt-3">
+                        <i class="fas fa-plus"></i> Ajouter une ligne
+                    </button>
+                </fieldset>
+
+                <!-- Total Facture -->
+                <div class="card mb-4">
+                    <div class="card-body text-end bg-light">
+                        <h3 class="mb-0">Total de la Facture: <span id="total-facture">0 FCFA</span></h3>
+                    </div>
+                </div>
+
+                <!-- Boutons de soumission -->
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'liste_ventes' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left"></i> Annuler
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save"></i> {{ action }} la Facture
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    
+document.addEventListener('DOMContentLoaded', function() {
+    const articlesCache = {};
+
+    async function loadArticleData(articleId) {
+        if (articlesCache[articleId]) return articlesCache[articleId];
+        try {
+            const response = await fetch(`/articles/${articleId}/json/`);
+            const data = await response.json();
+            articlesCache[articleId] = data;
+            return data;
+        } catch (error) {
+            console.error('Erreur:', error);
+            return null;
+        }
+    }
+
+    async function autoFillArticleFields(selectElement) {
+        const row = selectElement.closest('.inline-formset-item');
+        const articleId = selectElement.value;
+
+        if (articleId) {
+            const articleData = await loadArticleData(articleId);
+            if (articleData) {
+                row.querySelector('[id$="-code_produit_facture"]').value = articleData.code_produit;
+                row.querySelector('[id$="-designation_facturee"]').value = articleData.designation;
+                row.querySelector('[id$="-prix_unitaire_facture"]').value = articleData.prix_unitaire_defaut;
+            }
+        } else {
+            row.querySelector('[id$="-code_produit_facture"]').value = '';
+            row.querySelector('[id$="-designation_facturee"]').value = '';
+            row.querySelector('[id$="-prix_unitaire_facture"]').value = '';
+        }
+        calculateLineTotal(row);
+    }
+
+    function calculateLineTotal(row) {
+        const quantity = parseFloat(row.querySelector('[id$="-quantite"]').value) || 0;
+        const price = parseFloat(row.querySelector('[id$="-prix_unitaire_facture"]').value) || 0;
+        const total = quantity * price;
+        row.querySelector('.ligne-total').textContent = total.toFixed(2) + ' FCFA';
+        calculateInvoiceTotal();
+    }
+
+    function calculateInvoiceTotal() {
+        let total = 0;
+        document.querySelectorAll('.inline-formset-item').forEach(row => {
+            const totalText = row.querySelector('.ligne-total').textContent;
+            const lineTotal = parseFloat(totalText.replace(' FCFA', '')) || 0;
+            total += lineTotal;
+        });
+        document.getElementById('total-facture').textContent = total.toFixed(2) + ' FCFA';
+    }
+
+    function reattachEventListeners(row) {
+        const articleSelect = row.querySelector('select[name$="-article"]');
+        const quantityInput = row.querySelector('input[name$="-quantite"]');
+        if (articleSelect) {
+            articleSelect.addEventListener('change', function() {
+                autoFillArticleFields(this);
+            });
+        }
+        if (quantityInput) {
+            quantityInput.addEventListener('input', function() {
+                calculateLineTotal(row);
+            });
+        }
+    }
+
+    document.getElementById('add-item')?.addEventListener('click', function() {
+        const totalForms = document.getElementById('id_lignes-TOTAL_FORMS');
+        const formCount = parseInt(totalForms.value);
+        const formContainer = document.getElementById('formset-container');
+        const emptyRow = formContainer.querySelector('.inline-formset-item').cloneNode(true);
+
+        // Mise à jour des IDs
+        const regex = new RegExp('lignes-(\\d+)-', 'g');
+        emptyRow.innerHTML = emptyRow.innerHTML.replace(regex, `lignes-${formCount}-`);
+
+        // Réinitialiser les champs
+        emptyRow.querySelectorAll('input, select').forEach(input => {
+            if (input.type !== 'hidden' && !input.name.includes('DELETE')) {
+                input.value = '';
+                if (input.name.includes('prix_unitaire_facture') || input.name.includes('code_produit_facture') || input.name.includes('designation_facturee')) {
+                    input.readOnly = true;
+                }
+            }
+        });
+
+        emptyRow.querySelector('.ligne-total').textContent = '0 FCFA';
+        formContainer.appendChild(emptyRow);
+        totalForms.value = formCount + 1;
+
+        reattachEventListeners(emptyRow);
+    });
+
+    // 🔥 Bouton suppression dernière ligne
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Supprimer la dernière ligne";
+    removeBtn.className = "btn btn-danger btn-sm mt-3 ms-2";
+    removeBtn.type = "button";
+    removeBtn.addEventListener("click", function() {
+        const formContainer = document.getElementById('formset-container');
+        const items = formContainer.querySelectorAll('.inline-formset-item');
+        if (items.length > 1) {
+            items[items.length - 1].remove();
+            const totalForms = document.getElementById('id_lignes-TOTAL_FORMS');
+            totalForms.value = parseInt(totalForms.value) - 1;
+            calculateInvoiceTotal();
+        }
+    });
+
+    document.getElementById("add-item")?.insertAdjacentElement('afterend', removeBtn);
+
+    // Init events
+    document.querySelectorAll('.inline-formset-item').forEach(row => {
+        reattachEventListeners(row);
+        calculateLineTotal(row);
+    });
+});
+</script> 
+    
+{% endblock %}

@@ -1,0 +1,71 @@
+{% load static %}
+
+  <meta charset="UTF-8">
+  <title>Facture</title>
+  <link rel="stylesheet" href="{% static 'facture.css' %}">
+</head>
+<body>
+
+  <div class="facture">
+
+    <!-- En-tête entreprise -->
+    <div class="header">
+      <h1>E.K-F</h1>
+      <p><strong>Ets. KIEMDE & FRERES</strong><br>
+      Vente de Pièces Détachées toutes marques<br>
+      Marché de Cycle TP, Ouagadougou – Burkina Faso<br>
+      Tél: 70 03 18 45 / 78 90 80 09 / 78 75 29 29<br>
+      Orange Money: 76 72 28 48</p>
+      <div class="facture-info">
+        <span><strong>FACTURE</strong></span>
+        <span>N°: {{ vente.id|stringformat:"05d" }}</span>
+        <span>Date: {{ vente.date|date:"d/m/Y" }}</span>
+      </div>
+    </div>
+
+    <!-- Infos client -->
+    <div class="client-info">
+      <p><strong>Nom:</strong> {{ vente.client }}</p>
+      <p><strong>Adresse:</strong> ................................................</p>
+    </div>
+
+    <!-- Tableau des produits -->
+    <table>
+      <thead>
+        <tr>
+          <th>Désignation</th>
+          <th>Code Produit</th>
+          <th>Qté</th>
+          <th>Prix Unitaire</th>
+          <th>Prix Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ vente.reference }}</td>
+          <td>{{ vente.code_produit }}</td>
+          <td>{{ vente.quantite }}</td>
+          <td>{{ vente.prix_unitaire }} FCFA</td>
+          <td>{{ vente.prix_total }} FCFA</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Total -->
+    <div class="total">
+      <strong>TOTAL GÉNÉRAL :</strong> {{ vente.prix_total }} FCFA
+    </div>
+
+    <!-- Signatures -->
+    <div class="signatures">
+      <p><strong>Le Vendeur</strong></p>
+      <p><strong>Le Client</strong></p>
+    </div>
+
+  </div>
+  <!-- Bouton pour imprimer la facture -->
+  <button onclick="window.print()" style="margin-top: 10px;">🖨️ Imprimer</button>
+
+
+</body>
+
